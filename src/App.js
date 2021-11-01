@@ -135,7 +135,21 @@ function App() {
     }
   };
 
+  const onKeydown = (ev) => {
+    if (ev.key.toLowerCase() === 'x') {
+      onClickButton(MULTIPLICATION)
+    } else if (buttons.includes(ev.key)) {
+      onClickButton(ev.key);
+    } else if (ev.key === 'Enter') {
+      onClickButton(EQUAL);
+    } else if (ev.key === DECIMAL_DOT) {
+      onClickButton(DECIMAL);
+    }
+  }
+
   const context = { numbers, removers, operations };
+
+  document.addEventListener('keydown', onKeydown);
 
   return (
     <div className="calculator">
