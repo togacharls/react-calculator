@@ -9,13 +9,14 @@ const MAX_NUMBER = Number('9'.repeat(MAX_RESULT_LENGTH));
 const ZERO = '0';
 const DECIMAL = ',';
 const DECIMAL_DOT = '.';
+const DELETE = '⌫';
 const EQUAL = '=';
 const SUM = '+';
 const SUBSTRACTION = '-';
 const MULTIPLICATION = 'X';
 const DIVISION = '/';
 const MODULE = '%';
-const removers = ['C', 'CE', '⌫'];
+const removers = ['C', 'CE', DELETE];
 const operations = [MODULE, DIVISION, MULTIPLICATION, SUBSTRACTION, SUM];
 const numbers = ['7', '8', '9', '4', '5', '6', '1', '2', '3', ZERO];
 export const CalculatorContext = React.createContext();
@@ -144,6 +145,8 @@ function App() {
       onClickButton(EQUAL);
     } else if (ev.key === DECIMAL_DOT) {
       onClickButton(DECIMAL);
+    } else if (ev.key === 'Backspace' || ev.key === 'Delete') {
+      onClickButton(DELETE);
     }
   }
 
