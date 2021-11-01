@@ -1,0 +1,25 @@
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.keyboard > .row {
+  display: flex;
+  flex-direction: row;
+  flex-grow: .25;
+}
+
+.keyboard > .row > button {
+  display: flex;
+  width: 80px;
+  height: 80px;
+  justify-content: center;
+  align-items: center;
+  background-color: #efefef;
+  border: 2px solid #f4f4f4
+}
+
+.keyboard > .row > button.number {
+  background-color: #fff;
+}

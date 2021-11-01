@@ -1,23 +1,109 @@
-import logo from './logo.svg';
 import './App.css';
+import CalculatorScreen from './CalculatorScreen.js';
+import CalculatorKeyboard from './CalculatorKeyboard.js';
+import React, { useState } from 'react';
+
+const ZERO = '0';
+const DECIMAL = ',';
+const EQUAL = '=';
+const SUM = '+';
+const SUBSTRACTION = '-';
+const MULTIPLICATION = 'X';
+const DIVISION = '/';
+const MODULE = '%';
+const removers = ['C', 'CE', '⌫'];
+const operations = [MODULE, DIVISION, MULTIPLICATION, SUBSTRACTION, SUM];
+const numbers = ['7', '8', '9', '4', '5', '6', '1', '2', '3', ZERO];
+export const CalculatorContext = React.createContext();
 
 function App() {
+  const [state, setState] = useState({ result: ZERO, operation: '' });
+  
+  const buttons = [
+    MODULE, ...removers,
+    ...numbers.slice(0, 3), DIVISION,
+    ...numbers.slice(3, 6), MULTIPLICATION,
+    ...numbers.slice(6, 9), SUBSTRACTION,
+    DECIMAL, numbers[9], EQUAL, SUM
+  ];
+
+  const calc = () => {
+    let operator = '', result;
+    const thereIsOperator = operations.some(op => {
+      if (state.operation.includes(op)) {
+        operator = op;
+      }
+      return !!operator;
+    });
+
+    if (thereIsOperator) {
+      switch (operator) {
+        case SUM:
+          result = (Number(state.operation.slice(0, -1)) + Number(state.result));
+          break;
+        case SUBSTRACTION:
+          result = (Number(state.operation.slice(0, -1)) - Number(state.result));
+          break;
+        case MULTIPLICATION:
+          result = (Number(state.operation.slice(0, -1)) * Number(state.result));
+          break;
+        case DIVISION:
+          result = (Number(state.operation.slice(0, -1)) / Number(state.result));
+          break;
+        case MODULE:
+          result = (Number(state.operation.slice(0, -1)) % Number(state.result));
+          break;
+      }
+      setState({ operation: '', result: result.toString() });
+    }
+  }
+
+  const onClickRemover = (button) => {
+    switch(button) {
+      case removers[0]:
+        setState({ operation: '', result: ZERO });
+        break;
+      case removers[1]:
+        setState({ ...state, result: ZERO });
+        break;
+      case removers[2]:
+        setState({ ...state, result: state.result.slice(0, -1) || ZERO });
+        break;
+    }
+  }
+
+  const onClickOperation = (button) => {
+    if (operations.some(operator => state.operation.includes(operator))) {
+      setState({ ...state, operation: state.operation.slice(0, -1) + button });
+    } else {
+      setState({ operation: state.result + button, result: ZERO });
+    }
+  }
+
+  const onClickNumber = (button) => {
+    setState({ ...state, result: state.result === ZERO ? button : state.result + button });
+  }
+
+  const onClickButton = (button) => {
+    if (operations.includes(button)) {
+      onClickOperation(button);
+    } else if (numbers.includes(button)) {
+      onClickNumber(button);
+    } else if (removers.includes(button)) {
+      onClickRemover(button);
+    } else if (button === EQUAL) {
+      calc();
+    }
+  };
+
+  const context = { numbers, removers, operations };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="calculator">
+      <CalculatorContext.Provider value={context}>
+        <CalculatorScreen result={state.result} operation={state.operation}/>
+        <CalculatorKeyboard buttons={buttons} onClickButton={onClickButton}/>
+      </CalculatorContext.Provider>
     </div>
   );
 }
