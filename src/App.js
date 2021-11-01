@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 
 const ZERO = '0';
 const DECIMAL = ',';
+const DECIMAL_DOT = '.';
 const EQUAL = '=';
 const SUM = '+';
 const SUBSTRACTION = '-';
@@ -28,7 +29,7 @@ function App() {
   ];
 
   const calc = () => {
-    let operator = '', result;
+    let operator = '', result, operationToNumber, resultToNumber;
     const thereIsOperator = operations.some(op => {
       if (state.operation.includes(op)) {
         operator = op;
@@ -37,24 +38,26 @@ function App() {
     });
 
     if (thereIsOperator) {
+      operationToNumber = state.operation.replace(DECIMAL, DECIMAL_DOT).slice(0, -1);
+      resultToNumber = state.result.replace(DECIMAL, DECIMAL_DOT);
       switch (operator) {
         case SUM:
-          result = (Number(state.operation.slice(0, -1)) + Number(state.result));
+          result = (Number(operationToNumber) + Number(resultToNumber));
           break;
         case SUBSTRACTION:
-          result = (Number(state.operation.slice(0, -1)) - Number(state.result));
+          result = (Number(operationToNumber) - Number(resultToNumber));
           break;
         case MULTIPLICATION:
-          result = (Number(state.operation.slice(0, -1)) * Number(state.result));
+          result = (Number(operationToNumber) * Number(resultToNumber));
           break;
         case DIVISION:
-          result = (Number(state.operation.slice(0, -1)) / Number(state.result));
+          result = (Number(operationToNumber) / Number(resultToNumber));
           break;
         case MODULE:
-          result = (Number(state.operation.slice(0, -1)) % Number(state.result));
+          result = (Number(operationToNumber) % Number(resultToNumber));
           break;
       }
-      setState({ operation: '', result: result.toString() });
+      setState({ operation: '', result: result.toString().replace(DECIMAL_DOT, DECIMAL) });
     }
   }
 
@@ -75,13 +78,19 @@ function App() {
   const onClickOperation = (button) => {
     if (operations.some(operator => state.operation.includes(operator))) {
       setState({ ...state, operation: state.operation.slice(0, -1) + button });
-    } else {
+    } else if (state.result.substr(-1) !== DECIMAL) {
       setState({ operation: state.result + button, result: ZERO });
     }
   }
 
   const onClickNumber = (button) => {
     setState({ ...state, result: state.result === ZERO ? button : state.result + button });
+  }
+
+  const onClickDecimal = () => {
+    if (!isNaN(Number(state.result))) {
+      setState({ ...state, result: state.result + DECIMAL });
+    }
   }
 
   const onClickButton = (button) => {
@@ -93,6 +102,8 @@ function App() {
       onClickRemover(button);
     } else if (button === EQUAL) {
       calc();
+    } else if (button === DECIMAL) {
+      onClickDecimal();
     }
   };
 
