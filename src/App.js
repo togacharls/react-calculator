@@ -7,6 +7,7 @@ const OVERFLOW = 'Overflow';
 const MAX_RESULT_LENGTH = 14;
 const MAX_NUMBER = Number('9'.repeat(MAX_RESULT_LENGTH));
 const ZERO = '0';
+const CLEAR = 'C';
 const DECIMAL = ',';
 const DECIMAL_DOT = '.';
 const DELETE = '⌫';
@@ -16,7 +17,7 @@ const SUBSTRACTION = '-';
 const MULTIPLICATION = 'X';
 const DIVISION = '/';
 const MODULE = '%';
-const removers = ['C', 'CE', DELETE];
+const removers = [CLEAR, 'CE', DELETE];
 const operations = [MODULE, DIVISION, MULTIPLICATION, SUBSTRACTION, SUM];
 const numbers = ['7', '8', '9', '4', '5', '6', '1', '2', '3', ZERO];
 export const CalculatorContext = React.createContext();
@@ -83,7 +84,7 @@ function App() {
   const onClickRemover = (button) => {
     if (state.result !== OVERFLOW) {
       switch(button) {
-        case removers[0]:
+        case CLEAR:
           setState({ operation: '', result: ZERO });
           break;
         case removers[1]:
@@ -147,6 +148,8 @@ function App() {
       onClickButton(DECIMAL);
     } else if (ev.key === 'Backspace' || ev.key === 'Delete') {
       onClickButton(DELETE);
+    } else if (ev.key === 'Escape') {
+      onClickButton(CLEAR);
     }
   }
 
