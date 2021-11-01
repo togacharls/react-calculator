@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 const OVERFLOW = 'Overflow';
 const MAX_RESULT_LENGTH = 14;
 const MAX_NUMBER = Number('9'.repeat(MAX_RESULT_LENGTH));
+const MIN_NUMBER = Number('9'.repeat(MAX_RESULT_LENGTH - 1)) * (-1);
 const ZERO = '0';
 const CLEAR = 'C';
 const DECIMAL = ',';
@@ -71,7 +72,7 @@ function App() {
       result = operationResult.toString().replace(DECIMAL_DOT, DECIMAL);
       decimalIndex = result.indexOf(DECIMAL);
 
-      if (operationResult > MAX_NUMBER) {
+      if (operationResult > MAX_NUMBER || operationResult < MIN_NUMBER) {
         result = OVERFLOW;
       } else if ( decimalIndex > -1 && result.length > MAX_RESULT_LENGTH) {
         result = result.substr(0, decimalIndex <= (MAX_RESULT_LENGTH -2) ? MAX_RESULT_LENGTH : decimalIndex);
