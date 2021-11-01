@@ -23,3 +23,8 @@
 .keyboard > .row > button.number {
   background-color: #fff;
 }
+
+.keyboard > .row > button:hover,
+.keyboard > .row > button.number:hover {
+  background-color: #a8a8a8;
+}
